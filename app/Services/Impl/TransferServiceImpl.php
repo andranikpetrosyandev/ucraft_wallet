@@ -11,6 +11,7 @@ use App\Services\Core\Transfer\CreateTransferParams;
 use App\Services\Core\Transfer\TransferStrategy;
 use App\Services\Core\TransferService;
 use App\Services\Core\WalletService;
+use Illuminate\Support\Facades\DB;
 
 class TransferServiceImpl implements TransferService
 {
@@ -26,13 +27,20 @@ class TransferServiceImpl implements TransferService
 
     public function create(CreateTransferParams $params)
     {
+        DB::beginTransaction();
+        try {
+            $this->transactionService->create(
+                new CreateTransactionParams(TransactionType::Debit->value, $params->getFromWalletId(), $params->getAmount())
+            );
+            $this->transactionService->create(
+                new CreateTransactionParams(TransactionType::Credit->value, $params->getToWalletId(), $params->getAmount())
+            );
+            Db::commit();
+        } catch (\Exception $e) {
+            Db::rollBack();
+            throw $e;
+        }
 
-        $this->transactionService->create(
-            new CreateTransactionParams(TransactionType::Debit->value, $params->getFromWalletId(), $params->getAmount())
-        );
-        $this->transactionService->create(
-            new CreateTransactionParams(TransactionType::Credit->value, $params->getToWalletId(), $params->getAmount())
-        );
 
     }
 }
