@@ -70,12 +70,12 @@ class WalletServiceImpl implements WalletService
 
     function getTotalAmountForUser(int $userId): float
     {
-        $total = Redis::get('totalAmountForUserWallets');
+        $total = Redis::get('totalAmountForUserWallets' . $userId);
         if ($total) {
             return $total;
         }
         $total = $this->walletRepository->getTotalAmountForUser($userId);
-        Redis::set('totalAmountForUserWallets', $total);
+        Redis::set('totalAmountForUserWallets' . $userId, $total);
         return $total;
     }
 }

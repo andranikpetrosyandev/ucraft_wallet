@@ -34,8 +34,6 @@ class HomeController extends Controller
         $user = $this->userService->getUserById(Auth::user()->id);
         $wallets = $this->walletService->listByUserId($user->id);
         $totalPriceForUser = $this->walletService->getTotalAmountForUser($user->id);
-
-
         if ($wallets->count() == 0) {
             return redirect()->route('wallet.store');
         }

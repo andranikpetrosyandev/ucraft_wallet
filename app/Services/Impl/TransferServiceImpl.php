@@ -38,7 +38,6 @@ class TransferServiceImpl implements TransferService
             Db::commit();
         } catch (\Exception $e) {
             Db::rollBack();
-            throw $e;
         }
 
 

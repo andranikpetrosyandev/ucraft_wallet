@@ -8,6 +8,7 @@ use App\Repositories\TransactionRepository;
 use App\Services\Core\Transaction\CreateTransactionParams;
 use App\Services\Core\TransactionService;
 use App\Services\Core\WalletService;
+use MongoDB\Driver\Exception\ExecutionTimeoutException;
 use PHPUnit\Framework\Exception;
 
 class TransactionServiceImpl implements TransactionService
@@ -43,7 +44,6 @@ class TransactionServiceImpl implements TransactionService
         if ($params->getType() == TransactionType::Credit->value) {
             $this->walletService->increaseTotalAmount($params->getWalletId(), $params->getAmount());
         } else if ($params->getType() == TransactionType::Debit->value) {
-
             $this->walletService->decreaseTotalAmount($params->getWalletId(), $params->getAmount());
         }
         return $transaction;
